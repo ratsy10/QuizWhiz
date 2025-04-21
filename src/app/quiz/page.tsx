@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -7,6 +6,7 @@ import { generateQuizQuestions } from '@/ai/flows/generate-quiz-questions';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import Loading from '@/components/loading';
 
 interface Question {
   question: string;
@@ -21,10 +21,12 @@ export default function QuizPage() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [userAnswers, setUserAnswers] = useState<string[]>([]);
   const [quizFinished, setQuizFinished] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); // Add loading state
   const router = useRouter();
 
   useEffect(() => {
     const loadQuestions = async () => {
+      setIsLoading(true); // Start loading
       try {
         const quizData = await generateQuizQuestions({ topic });
         setQuestions(quizData.questions);
@@ -32,6 +34,8 @@ export default function QuizPage() {
       } catch (error) {
         console.error("Failed to load questions:", error);
         alert("Failed to load questions. Please try again.");
+      } finally {
+        setIsLoading(false); // End loading
       }
     };
 
@@ -69,8 +73,12 @@ export default function QuizPage() {
     router.push('/'); // Navigate back to the homepage
   };
 
+  if (isLoading) {
+    return <Loading />; // Use the loading component
+  }
+
   if (questions.length === 0) {
-    return <div className="flex items-center justify-center min-h-screen bg-[--quiz-background] text-[--quiz-text]">Loading questions...</div>;
+    return <div className="flex items-center justify-center min-h-screen">No questions available.</div>;
   }
 
   if (quizFinished) {
@@ -84,8 +92,8 @@ export default function QuizPage() {
     }
 
     return (
-      <div className="flex items-center justify-center min-h-screen bg-[--quiz-background] text-[--quiz-text]">
-        <Card className="w-full max-w-md rounded-lg shadow-md">
+      <div className="flex items-center justify-center min-h-screen">
+        <Card className="w-full max-w-md rounded-lg shadow-md bg-[--card] text-[--card-foreground]">
           <CardHeader>
             <CardTitle className="text-2xl font-bold text-center">Quiz Results</CardTitle>
           </CardHeader>
@@ -93,7 +101,7 @@ export default function QuizPage() {
             <div className="text-4xl font-bold">Score: {score} / {questions.length}</div>
             <div className="text-xl">Percentage: {percentage.toFixed(2)}%</div>
             <p className="text-center">{feedbackMessage}</p>
-            <Button className="bg-[--quiz-accent] text-black rounded-md p-2 font-semibold hover:bg-yellow-500" onClick={handleRestartQuiz}>
+            <Button className="glowing-button" onClick={handleRestartQuiz}>
               Play Again
             </Button>
           </CardContent>
@@ -106,8 +114,8 @@ export default function QuizPage() {
   const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-[--quiz-background] text-[--quiz-text]">
-      <Card className="w-full max-w-md rounded-lg shadow-md">
+    <div className="flex items-center justify-center min-h-screen">
+      <Card className="w-full max-w-md rounded-lg shadow-md bg-[--card] text-[--card-foreground]">
         <CardHeader>
           <CardTitle className="text-xl font-semibold">Question {currentQuestionIndex + 1} of {questions.length}</CardTitle>
           <Progress value={progress} className="mt-2" />
@@ -118,11 +126,7 @@ export default function QuizPage() {
             {currentQuestion.options.map((option, index) => (
               <Button
                 key={index}
-                className={`w-full rounded-md p-2 text-left ${
-                  userAnswers[currentQuestionIndex] === option
-                    ? 'bg-yellow-200 text-black'
-                    : 'bg-white text-black hover:bg-gray-100'
-                }`}
+                className={`w-full rounded-md p-2 text-left bg-[--secondary] text-[--secondary-foreground] hover:bg-[--accent] hover:text-black`}
                 onClick={() => handleAnswerSelect(option)}
               >
                 {option}
@@ -130,7 +134,7 @@ export default function QuizPage() {
             ))}
           </div>
           <Button
-            className="bg-[--quiz-accent] text-black rounded-md p-2 font-semibold hover:bg-yellow-500"
+            className="glowing-button"
             onClick={handleSubmitAnswer}
           >
             {currentQuestionIndex === questions.length - 1 ? 'Finish Quiz' : 'Next Question'}

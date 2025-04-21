@@ -28,8 +28,8 @@ export default function Home() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-[--quiz-background] text-[--quiz-text]">
-      <Card className="w-full max-w-md rounded-lg shadow-md">
+    <div className="flex items-center justify-center min-h-screen">
+      <Card className="w-full max-w-md rounded-lg shadow-md bg-[--card] text-[--card-foreground]">
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-center">
             AI Quiz Master
@@ -37,10 +37,10 @@ export default function Home() {
         </CardHeader>
         <CardContent className="flex flex-col space-y-4">
           <Select onValueChange={setSelectedTopic}>
-            <SelectTrigger className="w-full">
+            <SelectTrigger className="w-full bg-[--input] text-[--foreground]">
               <SelectValue placeholder="Select a topic" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="bg-[--popover] text-[--popover-foreground]">
               {quizTopics.map((topic) => (
                 <SelectItem key={topic} value={topic}>
                   {topic}
@@ -49,7 +49,7 @@ export default function Home() {
             </SelectContent>
           </Select>
           <Button
-            className="bg-[--quiz-accent] text-black rounded-md p-2 font-semibold hover:bg-yellow-500"
+            className="glowing-button"
             onClick={handleStartQuiz}
             disabled={!selectedTopic}
           >
@@ -60,4 +60,3 @@ export default function Home() {
     </div>
   );
 }
-
