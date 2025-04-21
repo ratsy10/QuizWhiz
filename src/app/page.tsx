@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useRouter } from 'next/navigation';
@@ -22,7 +21,7 @@ export default function Home() {
 
   const handleStartQuiz = () => {
     if (selectedTopic) {
-      router.push(`/quiz?topic=${selectedTopic}`);
+      router.push(`/quiz?topic=${encodeURIComponent(selectedTopic)}`);
     } else {
       alert("Please select a topic to start the quiz.");
     }
