@@ -17,6 +17,7 @@ interface Question {
 export default function QuizPage() {
   const searchParams = useSearchParams();
   const topic = searchParams.get('topic') || "General Knowledge";
+  const difficulty = searchParams.get('difficulty') || "Easy";
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [userAnswers, setUserAnswers] = useState<string[]>([]);
@@ -28,7 +29,7 @@ export default function QuizPage() {
     const loadQuestions = async () => {
       setIsLoading(true); // Start loading
       try {
-        const quizData = await generateQuizQuestions({ topic });
+        const quizData = await generateQuizQuestions({ topic, difficulty });
         setQuestions(quizData.questions);
         setUserAnswers(Array(quizData.questions.length).fill('')); // Initialize userAnswers
       } catch (error) {
@@ -40,7 +41,7 @@ export default function QuizPage() {
     };
 
     loadQuestions();
-  }, [topic]);
+  }, [topic, difficulty]);
 
   const handleAnswerSelect = (answer: string) => {
     const newUserAnswers = [...userAnswers];
@@ -101,6 +102,23 @@ export default function QuizPage() {
             <div className="text-4xl font-bold">Score: {score} / {questions.length}</div>
             <div className="text-xl">Percentage: {percentage.toFixed(2)}%</div>
             <p className="text-center">{feedbackMessage}</p>
+
+            <h3 className="text-xl font-semibold">Answer Key:</h3>
+            <ul className="space-y-2">
+              {questions.map((question, index) => (
+                <li key={index} className="text-left">
+                  <p className="font-semibold">{index + 1}. {question.question}</p>
+                  <p>
+                    Your Answer:{" "}
+                    <span className={userAnswers[index] === question.correctAnswer ? "text-green-500" : "text-red-500"}>
+                      {userAnswers[index] || "Not Answered"}
+                    </span>
+                  </p>
+                  <p className="text-green-500">Correct Answer: {question.correctAnswer}</p>
+                </li>
+              ))}
+            </ul>
+
             <Button className="glowing-button" onClick={handleRestartQuiz}>
               Play Again
             </Button>
@@ -144,5 +162,3 @@ export default function QuizPage() {
     </div>
   );
 }
-
-    

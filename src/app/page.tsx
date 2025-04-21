@@ -15,15 +15,22 @@ const quizTopics = [
   "Sports"
 ];
 
+const difficulties = [
+  "Easy",
+  "Medium",
+  "Hard",
+];
+
 export default function Home() {
   const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
+  const [selectedDifficulty, setSelectedDifficulty] = useState<string | null>(null);
   const router = useRouter();
 
   const handleStartQuiz = () => {
-    if (selectedTopic) {
-      router.push(`/quiz?topic=${encodeURIComponent(selectedTopic)}`);
+    if (selectedTopic && selectedDifficulty) {
+      router.push(`/quiz?topic=${encodeURIComponent(selectedTopic)}&difficulty=${encodeURIComponent(selectedDifficulty)}`);
     } else {
-      alert("Please select a topic to start the quiz.");
+      alert("Please select a topic and difficulty to start the quiz.");
     }
   };
 
@@ -48,10 +55,24 @@ export default function Home() {
               ))}
             </SelectContent>
           </Select>
+
+          <Select onValueChange={setSelectedDifficulty}>
+            <SelectTrigger className="w-full bg-[--input] text-[--foreground]">
+              <SelectValue placeholder="Select difficulty" />
+            </SelectTrigger>
+            <SelectContent className="bg-[--popover] text-[--popover-foreground]">
+              {difficulties.map((difficulty) => (
+                <SelectItem key={difficulty} value={difficulty}>
+                  {difficulty}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
           <Button
             className="glowing-button"
             onClick={handleStartQuiz}
-            disabled={!selectedTopic}
+            disabled={!selectedTopic || !selectedDifficulty}
           >
             Start Quiz
           </Button>
@@ -60,3 +81,4 @@ export default function Home() {
     </div>
   );
 }
+
