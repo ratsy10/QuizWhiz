@@ -126,7 +126,7 @@ export default function QuizPage() {
             {currentQuestion.options.map((option, index) => (
               <Button
                 key={index}
-                className={`w-full rounded-md p-2 text-left bg-[--secondary] text-[--secondary-foreground] hover:bg-[--accent] hover:text-black`}
+                className={`w-full rounded-md p-2 text-left ${userAnswers[currentQuestionIndex] === option ? 'bg-[--accent] text-black' : 'bg-[--secondary] text-[--secondary-foreground] hover:bg-[--accent] hover:text-black'}`}
                 onClick={() => handleAnswerSelect(option)}
               >
                 {option}
@@ -144,3 +144,5 @@ export default function QuizPage() {
     </div>
   );
 }
+
+    
