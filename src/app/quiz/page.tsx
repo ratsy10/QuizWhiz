@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import Loading from '@/components/loading';
+import { ArrowLeft } from "lucide-react";
 
 interface Question {
   question: string;
@@ -135,6 +136,12 @@ export default function QuizPage() {
     <div className="flex items-center justify-center min-h-screen">
       <Card className="w-full max-w-md rounded-lg shadow-md bg-[--card] text-[--card-foreground]">
         <CardHeader>
+           <div className="absolute top-2 right-2">
+              <Button variant="ghost" size="icon" onClick={handleRestartQuiz}>
+                <ArrowLeft className="h-4 w-4" />
+                <span className="sr-only">Restart Quiz</span>
+              </Button>
+            </div>
           <CardTitle className="text-xl font-semibold">Question {currentQuestionIndex + 1} of {questions.length}</CardTitle>
           <Progress value={progress} className="mt-2" />
         </CardHeader>
